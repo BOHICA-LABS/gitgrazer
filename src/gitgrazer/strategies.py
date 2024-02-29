@@ -1,11 +1,40 @@
 from abc import ABC, abstractmethod
 
 class ChangeDescriptionStrategy(ABC):
+    """
+
+    ChangeDescriptionStrategy
+
+    Abstract base class representing a strategy for generating change descriptions.
+
+    """
     @abstractmethod
     def generate(self, diff):
         pass
 
 class BasicChangeDescriptionStrategy(ChangeDescriptionStrategy):
+    """
+    The `BasicChangeDescriptionStrategy` class is a subclass of `ChangeDescriptionStrategy`. It provides a method `generate` which takes a `diff` object as input and generates a description
+    * of the changes in the diff.
+
+    Attributes:
+        None
+
+    Methods:
+        - `generate(diff)`: Generates a description of the changes in the given `diff` object.
+
+    Example usage:
+        basic_strategy = BasicChangeDescriptionStrategy()
+        diff = ... (initialize the diff object)
+        description = basic_strategy.generate(diff)
+
+    Example output:
+        File Added: path/to/file1.py
+        File Modified: path/to/file2.py
+        File Deleted: path/to/file3.py
+        File Renamed (Possible): path/to/file4.py
+
+    """
     def generate(self, diff):
         description = ""
         for change in diff:
@@ -20,6 +49,28 @@ class BasicChangeDescriptionStrategy(ChangeDescriptionStrategy):
         return description
 
 class VerboseChangeDescriptionStrategy(ChangeDescriptionStrategy):
+    """
+    A change description strategy that generates a verbose description of file changes.
+
+    This strategy generates a string description of the file changes in a diff.
+    The description includes information about added, deleted, modified, and renamed files,
+    as well as the diff details for modified files.
+
+    Attributes:
+        None
+
+    Methods:
+        generate(diff): Generates the verbose change description for the given diff.
+        _generate_diff_summary(change): Generates the diff summary for a modified file.
+
+    Note:
+        This class inherits from the ChangeDescriptionStrategy base class.
+
+    Example Usage:
+        strategy = VerboseChangeDescriptionStrategy()
+        diff = calculate_diff()
+        description = strategy.generate(diff)
+    """
     def generate(self, diff):
         description = ""
         for change in diff:
