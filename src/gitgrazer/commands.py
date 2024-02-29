@@ -4,12 +4,39 @@ from storage import CommitDataStorage
 
 
 class Command(ABC):
+    """
+
+    The Command class is an abstract base class that provides a common interface for all command classes. It defines a single abstract method called `execute()`.
+
+    Attributes:
+        None
+
+    Methods:
+        - execute(): This method is an abstract method that needs to be implemented by subclasses. It represents the action that the command class should perform.
+
+    Example usage:
+        class MyCommand(Command):
+            def execute(self):
+                # Code to perform the command's action
+
+            # Any additional methods or attributes specific to the MyCommand class can be defined here
+
+    Note:
+        This class is meant to be subclassed, not instantiated directly. Subclasses should provide an implementation for the `execute()` method.
+
+    """
     @abstractmethod
     def execute(self):
         pass
 
 
 class ErrorHandlingCommandDecorator(Command):
+    """
+    A decorator that provides error handling for a wrapped command.
+
+    :param wrapped_command: The command to be wrapped.
+    :type wrapped_command: Command
+    """
     def __init__(self, wrapped_command: Command):
         self._wrapped_command = wrapped_command
 
@@ -21,6 +48,21 @@ class ErrorHandlingCommandDecorator(Command):
             # You could potentially add logging or more sophisticated error handling here
 
 class CommitCommand(Command):
+    """
+
+    CommitCommand
+
+    This class represents a command for committing changes in a Git repository.
+
+    Attributes:
+        commit (Commit): The commit object to be processed.
+        storage (CommitDataStorage): The data storage object used to store processed commits.
+        change_strategy: The object responsible for generating change descriptions.
+
+    Methods:
+        execute(): Executes the command.
+
+    """
     def __init__(self, commit, storage: CommitDataStorage, change_strategy):
         self.commit = commit
         self.storage = storage
