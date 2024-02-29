@@ -2,3 +2,4 @@ cx_Freeze
 gitpython
 flet
 pydantic
+openai
