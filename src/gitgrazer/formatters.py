@@ -30,8 +30,8 @@ class CommitOutputFormatter(ABC):
     def format(self, commit) -> str:
         pass
 
-    def _build_output(self, commit) -> str:
-        return str(self._generate_commit_output(commit))
+    def _build_output(self, commit) -> CommitOutput:
+        return self._generate_commit_output(commit)
 
     def _generate_commit_output(self, commit) -> CommitOutput:
         output = CommitOutput(
@@ -57,35 +57,62 @@ class CommitOutputFormatter(ABC):
 
 
 class TextCommitOutputFormatter(CommitOutputFormatter):
-    """
-    Format the commit information into a text output.
+    SEPARATOR = "-" * 40
 
-    :param commit: The commit object to be formatted.
-    :type commit: Commit
-    :return: The formatted text output.
-    :rtype: str
-    """
-    def format(self, commit):
-        output = f"-" * 40 + "\n"
-        output += self._build_output(commit)
-        return output
+    def format(self, commit: CommitOutput) -> str:
+        commit_output = self._build_output(commit)
+        output_parts = [
+            self.SEPARATOR,
+            f"Commit Hash: {commit_output.commit_hash}",
+            f"Author: {commit_output.author}",
+            f"Date: {commit_output.date}",
+            f"Message: {commit_output.message.strip()}",
+        ]
+        formatted_output = "\n".join(output_parts)
+        return formatted_output
 
 
 class HTMLCommitOutputFormatter(CommitOutputFormatter):
     """
     Format the commit object as HTML.
-
     :param commit: Commit object to format as HTML.
     :type commit: Commit
-
     :return: HTML representation of the commit.
     :rtype: str
     """
+
     def format(self, commit):
-        output = "<div class='commit'>\n"
-        output += self._build_output(commit).replace("\n", "<br>")
-        output += "</div>\n"
+        commit_output = self._build_output(commit)
+        sanitized_commit = self._sanitize_for_html(commit_output)
+
+        output = f"<div class='commit'>\n{sanitized_commit}</div>\n"
+
         return output
+
+    def _sanitize_for_html(self, commit_output: CommitOutput) -> str:
+        """Convert CommitOutput object to HTML representation.
+
+        :param commit_output: The CommitOutput object to convert
+        :type commit_output: CommitOutput
+        :return: str: HTML formatted string
+        """
+        commit_info = (
+            f"Commit Hash: {commit_output.commit_hash}<br>"
+            f"Author: {commit_output.author}<br>"
+            f"Date: {commit_output.date}<br>"
+            f"Message: {commit_output.message}<br>"
+        )
+
+        return commit_info
+
+    def _sanitize_for_html(self, text: str) -> str:
+        """Replace certain characters with their HTML safe counterpart.
+
+        :param text: The text to sanitize
+        :type text: str
+        :return: str: The sanitized text
+        """
+        return text.replace("\n", "<br>")
 
 
 class CommitOutputFactory:
