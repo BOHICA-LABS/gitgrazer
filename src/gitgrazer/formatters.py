@@ -23,6 +23,9 @@ class TextCommitOutputFormatter(CommitOutputFormatter):
             f"Author: {commit_output.author}",
             f"Date: {commit_output.date}",
             f"Message: {commit_output.message.strip()}",
+            f"Diff Summary: {commit_output.diff_summary}"
+            f"Changes: {commit_output.change_description}",
+
         ]
         formatted_output = "\n".join(output_parts)
         return formatted_output
