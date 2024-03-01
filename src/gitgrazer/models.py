@@ -2,6 +2,20 @@ from pydantic import BaseModel
 from typing import Any
 
 
+class ChangeDescription(BaseModel):
+    """
+    ChangeDescription Class
+
+    A class for representing a change description.
+
+    Attributes:
+        content (str): The content of the change description.
+        diff_summary (str): A summary of the difference made by the change.
+
+    """
+    content: str
+    diff_summary: str
+
 class CommitOutput(BaseModel):
     """
     Represents the output of a commit operation.
@@ -18,20 +32,7 @@ class CommitOutput(BaseModel):
     author: str
     date: Any
     message: str
-    change_description: str = None
+    change_description: ChangeDescription = None
     diff_summary: str = None
 
 
-class ChangeDescription(BaseModel):
-    """
-    ChangeDescription Class
-
-    A class for representing a change description.
-
-    Attributes:
-        content (str): The content of the change description.
-        diff_summary (str): A summary of the difference made by the change.
-
-    """
-    content: str
-    diff_summary: str
