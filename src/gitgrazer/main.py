@@ -35,6 +35,7 @@ def process_commits(commits, commit_storage, description_strategy, search_manage
     """
     Process commits in reverse order.
 
+
     :param commits: List of commits to process.
     :param commit_storage: Object representing commit storage.
     :param description_strategy: Object representing description strategy.
@@ -45,6 +46,7 @@ def process_commits(commits, commit_storage, description_strategy, search_manage
     for commit in commits[::-1]:
         if search_manager.process_commits([commit]):
             command = CommitCommand(commit, commit_storage, description_strategy)
+            command.execute()
             output = output_format.format(commit)
             print(output)
 
