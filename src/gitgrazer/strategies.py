@@ -48,6 +48,7 @@ class BasicChangeDescriptionStrategy(ChangeDescriptionStrategy):
                 description += f"File Renamed (Possible): {change.a_path or change.b_path}\n"
         return description
 
+
 class VerboseChangeDescriptionStrategy(ChangeDescriptionStrategy):
     """
     A change description strategy that generates a verbose description of file changes.
