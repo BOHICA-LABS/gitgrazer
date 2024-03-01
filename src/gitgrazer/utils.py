@@ -59,7 +59,7 @@ def generate_change_description(diff) -> ChangeDescription:
         ]
     )
     # Extract the response
-    content = response['choices'][0].message.content.strip()
+    content = response.choices[0].message.content.strip()
 
     return ChangeDescription(content=content, diff_summary=diff_summary)
 
