@@ -1,18 +1,35 @@
 from abc import ABC, abstractmethod
-from models import CommitOutput
+from models import CommitOutput, ChangeDescription
 import utils
 
 
 class CommitOutputFormatter(ABC):
+    """
+    Abstract base class for commit output formatters.
+
+    This class defines the interface for formatting commit output. Subclasses must implement the `format` method.
+
+    """
     @abstractmethod
     def format(self, commit) -> str:
         pass
 
-    def _build_output(self, commit) -> CommitOutput:
+    def _build_output(self, commit) -> ChangeDescription:
         return utils.generate_commit_output(commit)
 
 
 class TextCommitOutputFormatter(CommitOutputFormatter):
+    """
+    This class is a subclass of CommitOutputFormatter and provides a specific implementation for formatting commit outputs into text format. It includes a method called format, which takes
+    * a CommitOutput object as input and returns a formatted string representation of the commit.
+
+    Example usage:
+        formatter = TextCommitOutputFormatter()
+        commit_output = CommitOutput()
+        # Set properties of commit_output
+        formatted_output = formatter.format(commit_output)
+
+    """
     SEPARATOR = "-" * 40
 
     def format(self, commit: CommitOutput) -> str:
@@ -32,6 +49,14 @@ class TextCommitOutputFormatter(CommitOutputFormatter):
 
 
 class HTMLCommitOutputFormatter(CommitOutputFormatter):
+    """
+    Formats the commit information into an HTML string.
+
+    :param commit: The commit information.
+    :type commit: CommitOutput
+    :return: The formatted HTML string.
+    :rtype: str
+    """
     def format(self, commit):
         commit_output = self._build_output(commit)
         sanitized_commit = self._sanitize_for_html(commit_output)
@@ -49,6 +74,16 @@ class HTMLCommitOutputFormatter(CommitOutputFormatter):
 
 
 class CommitOutputFactory:
+    """
+    CommitOutputFactory
+
+    A factory class for creating CommitOutputFormatter objects based on the output type.
+
+    Methods:
+        create_formatter(output_type: str) -> CommitOutputFormatter
+            Creates and returns a CommitOutputFormatter object based on the output type provided.
+
+    """
     @staticmethod
     def create_formatter(output_type: str) -> CommitOutputFormatter:  # Renamed from get_formatter to create_formatter
         if output_type == "text":
@@ -60,35 +95,21 @@ class CommitOutputFactory:
 
 class CommitOutputFactory:
     """
-    CommitOutputFactory
-
-    This class represents a factory for creating instances of CommitOutputFormatter based on the output type.
-
-    Methods:
-        get_formatter(output_type: str) -> CommitOutputFormatter
+    The `CommitOutputFactory` class provides a static method for getting the appropriate
+    `CommitOutputFormatter` based on the output type.
 
     Attributes:
         None
 
-    ---
+    Methods:
+        get_formatter: Gets the formatter for a given output type.
 
-    get_formatter(output_type: str) -> CommitOutputFormatter
+    Exceptions:
+        ValueError: Raised when an invalid output type is provided.
 
-    This method is used to get a CommitOutputFormatter instance based on the output type provided.
-
-    Parameters:
-        output_type (str): The type of output desired. Valid values are "text" for plain text formatting and "html" for HTML formatting.
-
-    Returns:
-        CommitOutputFormatter: An instance of the appropriate CommitOutputFormatter subclass based on the output type.
-
-    Raises:
-        ValueError: If the output_type provided is not valid.
-
-    Example Usage:
-        factory = CommitOutputFactory()
-        formatter = factory.get_formatter("text")
-        output = formatter.format(commit)
+    Usage:
+        output_factory = CommitOutputFactory()
+        output_formatter = output_factory.get_formatter("text")
     """
     @staticmethod
     def get_formatter(output_type: str) -> CommitOutputFormatter:
